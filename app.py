@@ -8,7 +8,7 @@ from api import name_extracting_service
 app = Flask(__name__)
 
 
-@app.route('/extract_names_uk', methods=['POST'])
+@app.route('/extract-names-uk', methods=['POST'])
 def extract_names_uk():
     articles = json.loads(request.data)
     articles_matches = name_extracting_service.extract_names(articles)
