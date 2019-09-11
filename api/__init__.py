@@ -1,1 +1,1 @@
-from .name_extracting_servie import name_extracting_service
+from .name_extracting_service import name_extracting_service
