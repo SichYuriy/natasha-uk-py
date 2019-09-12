@@ -19,18 +19,18 @@ Date = fact(
 
 
 MONTHS = {
-    'январь': 1,
-    'февраль': 2,
-    'март': 3,
-    'апрель': 4,
-    'май': 5,
-    'июнь': 6,
-    'июль': 7,
-    'август': 8,
-    'сентябрь': 9,
-    'октябрь': 10,
-    'ноябрь': 11,
-    'декабрь': 12,
+    'січень': 1,
+    'лютий': 2,
+    'березень': 3,
+    'квітень': 4,
+    'травень': 5,
+    'червень': 6,
+    'липень': 7,
+    'серпень': 8,
+    'вересень': 9,
+    'жовтень': 10,
+    'листопад': 11,
+    'грудень': 12,
 }
 
 
@@ -53,8 +53,8 @@ DAY = and_(
 )
 
 YEAR_WORD = or_(
-    rule('г', eq('.').optional()),
-    rule(normalized('год'))
+    rule('р', eq('.').optional()),
+    rule(normalized('рік'))
 )
 
 YEAR = and_(
@@ -82,8 +82,8 @@ ERA_YEAR = and_(
 ERA_WORD = rule(
     eq('до'),
     or_(
-        rule('н', eq('.'), 'э', eq('.').optional()),
-        rule(normalized('наша'), normalized('эра'))
+        rule('н', eq('.'), 'е', eq('.').optional()),
+        rule(normalized('наша'), normalized('ера'))
     )
 ).interpretation(
     Date.current_era.const(False)
