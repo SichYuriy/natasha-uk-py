@@ -7,12 +7,9 @@ from yargy_uk import (
 )
 from yargy_uk.interpretation import fact
 from yargy_uk.predicates import (
-    caseless, normalized,
-    eq, length_eq,
     gram, dictionary,
-    is_single, is_title
+    vesum_tag,
 )
-from yargy_uk.relations import gnc_relation
 
 
 Location = fact(
@@ -20,127 +17,114 @@ Location = fact(
     ['name'],
 )
 
+ADJECTIVE_TAG = or_(
+    gram('ADJF'),
+    vesum_tag('adj')
+)
 
-gnc = gnc_relation()
+GENITIVE_TAG = or_(
+    gram('gent'),
+    vesum_tag('v_rod')
+)
 
 REGION = rule(
-    gram('ADJF').match(gnc),
+    ADJECTIVE_TAG,
     dictionary({
         'край',
         'район',
         'область',
         'губернія',
-    }).match(gnc),
+    }),
 ).interpretation(Location.name.inflected())
 
-gnc = gnc_relation()
-
-FEDERAL_DISTRICT = rule(
-    rule(caseless('северо'), '-').optional(),
-    dictionary({
-        'центральный',
-        'западный',
-        'южный',
-        'кавказский',
-        'приволжский',
-        'уральский',
-        'сибирский',
-        'дальневосточный',
-    }).match(gnc),
-    or_(
-        rule(
-            dictionary({'федеральный'}).match(gnc),
-            dictionary({'округ'}).match(gnc),
-        ),
-        rule('ФО'),
-    ),
-).interpretation(Location.name.inflected())
-
-gnc = gnc_relation()
 
 AUTONOMOUS_DISTRICT = rule(
-    gram('ADJF').match(gnc).repeatable(),
+    ADJECTIVE_TAG.repeatable(),
     or_(
         rule(
-            dictionary({'автономный'}).match(gnc),
-            dictionary({'округ'}).match(gnc),
+            dictionary({'автономний'}),
+            dictionary({'округ'}),
         ),
         rule('АО'),
     ),
 ).interpretation(Location.name.inflected())
 
-gnc = gnc_relation()
-
 FEDERATION = rule(
-    gram('ADJF').match(gnc).repeatable(),
+    ADJECTIVE_TAG.repeatable(),
     dictionary({
-        'республика',
-        'федерация',
-    }).match(gnc)
+        'республіка',
+        'федерація',
+    })
 ).interpretation(Location.name.inflected())
-
-gnc = gnc_relation()
 
 ADJX_FEDERATION = rule(
     or_(
-        gram('Adjx'),
         gram('ADJF'),
-    ).match(gnc).repeatable(),
+        vesum_tag('adj')
+    ).repeatable(),
     dictionary({
         'штат',
-        'эмират',
-    }).match(gnc),
-    gram('gent').optional().repeatable()
+        'емірат',
+    }),
+    GENITIVE_TAG.optional().repeatable()
 ).interpretation(Location.name.inflected())
-
-gnc = gnc_relation()
 
 STATE = rule(
     dictionary({
         'графство',
         'штат',
     }),
-    gram('ADJF').match(gnc).optional(),
-    gram('NOUN').match(gnc),
+    ADJECTIVE_TAG.optional(),
+    or_(
+        gram('NOUN'),
+        vesum_tag('noun')
+    ),
 ).interpretation(Location.name.inflected())
-
-gnc = gnc_relation()
 
 LOCALITY = rule(
     and_(
         dictionary({
-            'город',
-            'деревня',
+            'місто',
             'село',
+            'селище',
         }),
         not_(
             or_(
                 gram('Abbr'),
+                vesum_tag('abbr'),
                 gram('PREP'),
+                vesum_tag('prep'),
                 gram('CONJ'),
+                vesum_tag('conj'),
                 gram('PRCL'),
+                vesum_tag('part')
             ),
         ),
     ).optional(),
     and_(
-        gram('ADJF'),
-    ).match(gnc).optional(),
+        ADJECTIVE_TAG,
+    ).optional(),
     and_(
-        gram('Geox'),
+        or_(
+            vesum_tag('geo')
+        ),
         not_(
             or_(
                 gram('Abbr'),
+                vesum_tag('abbr'),
                 gram('PREP'),
+                vesum_tag('prep'),
                 gram('CONJ'),
+                vesum_tag('conj'),
                 gram('PRCL'),
+                vesum_tag('part')
             ),
         ),
-    ).match(gnc)
+    )
 ).interpretation(Location.name.inflected())
 
 LOCATION = or_(
     REGION,
-    FEDERAL_DISTRICT,
     AUTONOMOUS_DISTRICT,
     FEDERATION,
     ADJX_FEDERATION,
