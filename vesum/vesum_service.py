@@ -8,7 +8,7 @@ client = MongoClient(mongoDbHost, mongoDbPort, maxPoolSize=20)
 
 class VesumService():
     def findByWordForm(self, wordForm):
-        return client['natasha_uk_database']['vesumentry'].find({'word': wordForm})
+        return client['natasha-uk-database']['vesum-entry'].find({'word': wordForm})
 
 
 vesum_service = VesumService()
