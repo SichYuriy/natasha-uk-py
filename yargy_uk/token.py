@@ -42,10 +42,10 @@ class MorphToken(Token):
         Token.__init__(self, value, span, type)
         self.forms = forms
         self.vesum_records = []
-        for record in vesum_service.findByWordForm(value):
+        for record in vesum_service.find_by_word_form(value):
             self.vesum_records.append(record)
         if value.lower() != value:
-            for record in vesum_service.findByWordForm(value.lower()):
+            for record in vesum_service.find_by_word_form(value.lower()):
                 self.vesum_records.append(record)
 
     @property
@@ -90,10 +90,10 @@ class MorphTagToken(MorphToken, TagToken):
         self.tag = tag
         self.forms = forms
         self.vesum_records = []
-        for record in vesum_service.findByWordForm(value):
+        for record in vesum_service.find_by_word_form(value):
             self.vesum_records.append(record)
         if value.lower() != value:
-            for record in vesum_service.findByWordForm(value.lower()):
+            for record in vesum_service.find_by_word_form(value.lower()):
                 self.vesum_records.append(record)
 
     def constrained(self, forms):

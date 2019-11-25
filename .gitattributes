@@ -1,0 +1,1 @@
+vesum/dict_corp_lt.txt filter=lfs diff=lfs merge=lfs -text
